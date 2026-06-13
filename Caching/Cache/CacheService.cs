@@ -12,7 +12,7 @@ namespace Caching.Cache
         }
         public Task<T?> GetAsync<T>(string key)
         {
-            var data = _memoryCache.TryGetValue(key, out T value);
+            var data = _memoryCache.TryGetValue(key, out T? value);
             return Task.FromResult(value);
         }
 
@@ -27,7 +27,8 @@ namespace Caching.Cache
             var options = new MemoryCacheEntryOptions();
             if (expiration.HasValue)
             {
-                options.SlidingExpiration = expiration.Value;
+                options.AbsoluteExpirationRelativeToNow = expiration.Value;
+                options.SlidingExpiration = expiration.Value / 2;
             }
             _memoryCache.Set(key, Value, options);
             return Task.CompletedTask;
